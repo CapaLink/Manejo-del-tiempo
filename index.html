@@ -1,0 +1,805 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Manejo eficaz del tiempo — Curso interactivo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+
+:root{
+  --ink:#141F33;
+  --ink-soft:#243350;
+  --paper:#F0F3F7;
+  --paper-card:#FFFFFF;
+  --brass:#B8862B;
+  --brass-soft:#E7C888;
+  --slate:#45607F;
+  --moss:#3E7A5E;
+  --moss-soft:#DCEEE4;
+  --clay:#B35A46;
+  --clay-soft:#F5DFD8;
+  --line:#D9DFE8;
+  --text:#1D2634;
+  --text-soft:#5B6579;
+  --radius:14px;
+  --maxw:880px;
+}
+
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--text);
+  font-family:'IBM Plex Sans', system-ui, sans-serif;
+  font-size:17px;
+  line-height:1.6;
+}
+.logo{
+  position:absolute;
+  top:28px;
+  right:36px;
+  width:130px;
+  filter:brightness(0) invert(1);
+  opacity:.9;
+}  
+
+h1,h2,h3,h4{
+  font-family:'Fraunces', Georgia, serif;
+  color:var(--ink);
+  line-height:1.15;
+  margin:0 0 .5em 0;
+  font-weight:600;
+}
+
+.eyebrow{
+  font-family:'IBM Plex Mono', monospace;
+  font-size:12.5px;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:var(--brass);
+  font-weight:500;
+  display:block;
+  margin-bottom:.6em;
+}
+
+p{margin:0 0 1em 0;}
+ul,ol{margin:0 0 1em 0; padding-left:1.3em;}
+a{color:var(--slate);}
+
+.section{
+  scroll-margin-top:90px;
+  max-width:var(--maxw);
+  margin:0 auto;
+  padding:64px 24px;
+}
+.section + .section{border-top:1px solid var(--line);}
+.section[data-compass]{padding-top:96px;}
+
+/* ===== BOTON VOLVER A CURSOS ===== */
+.back-home{
+  position:fixed;
+  top:18px;
+  left:18px;
+  z-index:1000;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  font-family:'IBM Plex Mono', monospace;
+  font-size:12px;
+  letter-spacing:.03em;
+  text-decoration:none;
+  color:#EFEEE8;
+  background:rgba(20,31,51,.55);
+  backdrop-filter:blur(6px);
+  border:1px solid rgba(255,255,255,.18);
+  padding:8px 14px 8px 10px;
+  border-radius:100px;
+  opacity:.75;
+  transition:opacity .15s, background .15s;
+}
+.back-home:hover{opacity:1; background:var(--ink);}
+.back-home svg{width:13px; height:13px; flex-shrink:0;}
+@media (max-width:900px){
+  .back-home{top:10px; left:10px; font-size:11px; padding:7px 12px 7px 9px;}
+}
+
+/* ===== HERO ===== */
+.hero{
+  background:radial-gradient(120% 140% at 15% -10%, #24365A 0%, var(--ink) 55%, #0F1728 100%);
+  color:#EFEEE8;
+  padding:80px 24px 70px;
+  position:relative;
+  overflow:hidden;
+}
+.hero-inner{
+  max-width:var(--maxw);
+  margin:0 auto;
+  display:grid;
+  grid-template-columns:170px 1fr;
+  gap:40px;
+  align-items:center;
+}
+.hero h1{color:#fff; font-size:clamp(34px,5vw,52px); margin-bottom:.25em;}
+.hero p.lead{color:#C9CFDC; font-size:18px; max-width:52ch;}
+.hero-meta{display:flex; gap:10px; flex-wrap:wrap; margin-top:22px;}
+.chip{
+  font-family:'IBM Plex Mono', monospace;
+  font-size:12px;
+  letter-spacing:.04em;
+  border:1px solid rgba(255,255,255,.25);
+  color:#DCE1EA;
+  padding:6px 12px;
+  border-radius:100px;
+}
+
+/* compass (4 puntos) */
+.compass{width:150px; height:150px; margin:0 auto;}
+.compass .dial{fill:none; stroke:rgba(255,255,255,.35); stroke-width:1;}
+.compass .label{
+  font-family:'IBM Plex Mono', monospace;
+  font-size:8.5px;
+  fill:#9AA6BC;
+  letter-spacing:.05em;
+}
+.compass .label.active{fill:var(--brass-soft); font-weight:700;}
+.compass .needle{transform-origin:85px 85px; transition:transform .7s cubic-bezier(.2,.8,.2,1);}
+.compass .needle-fill{fill:var(--brass);}
+.compass .hub{fill:#0F1728; stroke:var(--brass); stroke-width:2;}
+
+/* ===== LAYOUT WITH NAV ===== */
+.layout{max-width:1180px; margin:0 auto; display:grid; grid-template-columns:220px 1fr; gap:0;}
+.railwrap{position:relative;}
+.rail{position:sticky; top:28px; padding:28px 20px 28px 24px; display:flex; flex-direction:column; gap:4px;}
+.rail .mini-compass{width:64px; height:64px; margin-bottom:16px;}
+.rail a{
+  font-family:'IBM Plex Mono', monospace; font-size:12px; letter-spacing:.02em;
+  color:var(--text-soft); text-decoration:none; padding:8px 10px; border-radius:8px;
+  border-left:2px solid transparent; transition:all .15s;
+}
+.rail a:hover{color:var(--ink); background:#E5E9F0;}
+.rail a.active{color:var(--ink); border-left-color:var(--brass); background:#fff; font-weight:600;}
+.content{min-width:0;}
+.content .section{padding-left:24px; padding-right:24px;}
+
+/* ===== CARDS / GRID ===== */
+.card-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:16px; margin:20px 0;}
+.card-grid.cols-4{grid-template-columns:repeat(4,1fr);}
+.card-grid.cols-3{grid-template-columns:repeat(3,1fr);}
+.card{background:var(--paper-card); border:1px solid var(--line); border-radius:var(--radius); padding:20px;}
+.card h4{font-size:16.5px; margin-bottom:.35em;}
+.card p{font-size:14.5px; color:var(--text-soft); margin:0;}
+.card .icon{font-size:22px; margin-bottom:8px; display:block;}
+.card .num{font-family:'IBM Plex Mono', monospace; color:var(--brass); font-size:13px; display:block; margin-bottom:6px;}
+
+/* ===== CALLOUT / DEFINICION BOX ===== */
+.callout{
+  background:#fff; border:1px solid var(--brass-soft); border-left:4px solid var(--brass);
+  border-radius:0 var(--radius) var(--radius) 0; padding:22px 26px; margin:20px 0;
+  font-family:'Fraunces', Georgia, serif; font-size:19px; color:var(--ink); font-weight:500; line-height:1.4;
+}
+
+/* ===== NUMBERED ACCORDION ===== */
+.acc-list{display:grid; gap:10px; margin:20px 0;}
+.acc-item{background:var(--paper-card); border:1px solid var(--line); border-radius:10px; overflow:hidden;}
+.acc-q{
+  width:100%; text-align:left; cursor:pointer; background:none; border:none;
+  padding:14px 18px; font-family:'IBM Plex Sans'; font-size:16px; font-weight:600;
+  color:var(--ink); display:flex; align-items:center; gap:12px;
+}
+.acc-q .n{
+  font-family:'IBM Plex Mono', monospace; font-size:12px; color:var(--brass);
+  width:24px; height:24px; border-radius:50%; background:#F3E7CB;
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+.acc-q .chev{margin-left:auto; color:var(--brass); transition:transform .2s;}
+.acc-item.open .acc-q .chev{transform:rotate(45deg);}
+.acc-a{max-height:0; overflow:hidden; transition:max-height .25s ease;}
+.acc-a p{padding:0 18px 16px 54px; margin:0; color:var(--text-soft); font-size:15px;}
+.acc-item.open .acc-a{max-height:260px;}
+
+/* ===== BENEFICIOS ICONOS ===== */
+.benefit-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin:20px 0;}
+.benefit-card{text-align:center; padding:18px 14px;}
+.benefit-card .icon{font-size:28px; display:block; margin-bottom:8px;}
+.benefit-card h4{font-size:14.5px; margin-bottom:.35em;}
+.benefit-card p{font-size:13px;}
+
+/* ===== TF QUIZ ===== */
+.tf-quiz{background:#fff; border:1px solid var(--line); border-radius:var(--radius); padding:24px 26px; margin:24px 0;}
+.tf-quiz .prompt{font-weight:600; margin-bottom:16px;}
+.tf-item{padding:14px 0; border-bottom:1px solid var(--line);}
+.tf-item:last-of-type{border-bottom:none;}
+.tf-q{font-weight:600; margin-bottom:10px; display:flex; gap:10px; align-items:flex-start; font-size:15px;}
+.tf-q .qn{
+  font-family:'IBM Plex Mono', monospace; font-size:11.5px; color:var(--brass);
+  width:22px; height:22px; border-radius:50%; background:#F3E7CB;
+  display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px;
+}
+.tf-buttons{display:flex; gap:10px; margin-left:32px; flex-wrap:wrap;}
+.tf-btn{
+  font-family:'IBM Plex Sans'; font-size:13.5px; padding:8px 18px; border-radius:8px;
+  border:1px solid var(--line); background:var(--paper); cursor:pointer; color:var(--text);
+  transition:all .15s;
+}
+.tf-btn:hover{border-color:var(--slate);}
+.tf-btn.selected{border-color:var(--slate); background:#E5E9F0; font-weight:600;}
+.tf-btn.correct{border-color:var(--moss); background:var(--moss-soft); color:#295c44; font-weight:600;}
+.tf-btn.incorrect{border-color:var(--clay); background:var(--clay-soft); color:#8a3f2f; font-weight:600;}
+
+.btn{
+  font-family:'IBM Plex Mono', monospace; font-size:13px; letter-spacing:.04em; text-transform:uppercase;
+  background:var(--ink); color:#fff; border:none; border-radius:8px; padding:12px 22px; cursor:pointer;
+  transition:background .15s; margin-top:16px;
+}
+.btn:hover{background:var(--ink-soft);}
+.feedback{margin-top:14px; font-size:14.5px; font-weight:600; display:none;}
+.feedback.show{display:block;}
+.feedback.good{color:var(--moss);}
+.feedback.bad{color:var(--clay);}
+
+/* ===== VIDEO ===== */
+.video-card{background:#fff; border:1px solid var(--line); border-radius:var(--radius); padding:20px; margin:20px 0;}
+.video-card .who{font-family:'IBM Plex Mono', monospace; font-size:12px; color:var(--slate); letter-spacing:.06em; text-transform:uppercase; display:block; margin-bottom:.5em;}
+.video-frame{position:relative; padding-bottom:56.25%; height:0; border-radius:10px; overflow:hidden; margin-top:14px;}
+.video-frame iframe{position:absolute; top:0; left:0; width:100%; height:100%; border:none;}
+
+/* ===== POMODORO WIDGET ===== */
+.pomodoro-widget{
+  background:radial-gradient(120% 140% at 15% -10%, #24365A 0%, var(--ink) 60%, #0F1728 100%);
+  color:#fff; border-radius:var(--radius); padding:38px 24px; text-align:center; margin:24px 0;
+}
+.pomodoro-mode{font-family:'IBM Plex Mono', monospace; text-transform:uppercase; letter-spacing:.1em; font-size:12.5px; color:var(--brass-soft); margin-bottom:10px;}
+.pomodoro-display{font-family:'IBM Plex Mono', monospace; font-size:clamp(48px,9vw,72px); font-weight:700; letter-spacing:.02em; line-height:1;}
+.pomodoro-controls{display:flex; gap:12px; justify-content:center; margin-top:24px; flex-wrap:wrap;}
+.pomodoro-controls .btn{margin-top:0;}
+.pomodoro-controls .btn.alt{background:transparent; border:1px solid rgba(255,255,255,.3);}
+.pomodoro-controls .btn.alt:hover{background:rgba(255,255,255,.1);}
+.pomodoro-cycles{margin-top:20px; font-size:12.5px; color:#C9CFDC; font-family:'IBM Plex Mono', monospace; letter-spacing:.04em;}
+.pomodoro-dots{display:flex; gap:6px; justify-content:center; margin-top:10px;}
+.pomodoro-dot{width:9px; height:9px; border-radius:50%; background:rgba(255,255,255,.25); border:1px solid rgba(255,255,255,.3);}
+.pomodoro-dot.done{background:var(--brass); border-color:var(--brass);}
+
+/* ===== EISENHOWER MATRIX ===== */
+.eisenhower{display:grid; grid-template-columns:1fr 1fr; gap:3px; background:var(--line); border-radius:var(--radius); overflow:hidden; margin:22px 0; border:1px solid var(--line);}
+.eh-quad{padding:22px 20px; min-height:110px;}
+.eh-quad .eh-tag{font-family:'IBM Plex Mono', monospace; font-size:11px; letter-spacing:.05em; text-transform:uppercase; opacity:.85; display:block; margin-bottom:6px;}
+.eh-quad h4{font-size:16px; margin-bottom:.25em;}
+.eh-quad p{font-size:12.5px; margin:0; opacity:.9;}
+.eh-quad.q1{background:var(--moss); color:#fff;}
+.eh-quad.q2{background:#2f5f48; color:#fff;}
+.eh-quad.q3{background:#EDEFF3; color:var(--text);}
+.eh-quad.q3 p{color:var(--text-soft);}
+.eh-quad.q4{background:#264a3a; color:#fff;}
+
+/* ===== TIMELINE (objetivos corto/mediano/largo) ===== */
+.timeline{display:grid; gap:16px; margin:20px 0;}
+.timeline-item{background:#fff; border:1px solid var(--line); border-left:4px solid var(--slate); border-radius:0 var(--radius) var(--radius) 0; padding:20px 24px;}
+.timeline-item .tag{font-family:'IBM Plex Mono', monospace; font-size:11.5px; letter-spacing:.05em; text-transform:uppercase; color:var(--slate); display:block; margin-bottom:8px;}
+.timeline-item ul{margin:0; padding-left:1.2em;}
+.timeline-item li{font-size:14.5px; color:var(--text-soft); margin-bottom:4px;}
+
+/* ===== CASE / SUGGESTED ACTIVITY ===== */
+.case-box{background:#fff; border:1px solid var(--line); border-left:4px solid var(--slate); border-radius:0 var(--radius) var(--radius) 0; padding:22px 24px; margin:20px 0;}
+.case-box h4{margin-bottom:.4em;}
+
+/* ===== EVAL FINAL ===== */
+.eval-section{background:var(--ink); color:#EFEEE8; margin-top:0;}
+.eval-section .section{max-width:var(--maxw); padding-top:70px; padding-bottom:70px;}
+.eval-section h2{color:#fff;}
+.eval-section .eyebrow{color:var(--brass-soft);}
+.eval-section p.lead{color:#C9CFDC;}
+.eval-checklist{list-style:none; padding:0; margin:20px 0; display:grid; gap:8px;}
+.eval-checklist li{
+  display:flex; gap:10px; align-items:flex-start; font-size:14.5px; color:#DCE1EA;
+}
+.eval-checklist li::before{content:"✓"; color:var(--brass-soft); font-weight:700; flex-shrink:0;}
+.form-frame{margin-top:26px; background:#fff; border-radius:var(--radius); overflow:hidden; box-shadow:0 20px 50px rgba(0,0,0,.35);}
+.form-frame iframe{width:100%; min-height:1400px; border:none; display:block;}
+
+footer{text-align:center; padding:30px 20px; color:var(--text-soft); font-size:13.5px; font-family:'IBM Plex Mono', monospace;}
+
+@media (max-width:900px){
+  .hero-inner{grid-template-columns:1fr; text-align:center;}
+  .compass{margin:0 auto;}
+  .layout{grid-template-columns:1fr;}
+  .rail{position:sticky; top:0; flex-direction:row; overflow-x:auto; gap:4px; background:var(--paper); border-bottom:1px solid var(--line); padding:12px 16px; z-index:10;}
+  .rail .mini-compass{display:none;}
+  .rail a{white-space:nowrap;}
+  .card-grid, .card-grid.cols-4, .card-grid.cols-3, .benefit-grid, .eisenhower{grid-template-columns:1fr;}
+  .tf-buttons{margin-left:0;}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto;}
+  .compass .needle, .acc-a{transition:none;}
+}
+
+</style>
+</head>
+<body>
+
+<a class="back-home" href="https://capalink.github.io/Cursos-LinkSolution/">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>
+  VOLVER A CURSOS
+</a>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-inner">
+      <img src="logo.png" alt="Logo LinkSolution" class="logo">
+    <svg class="compass" viewBox="0 0 170 170" aria-hidden="true">
+      <circle class="dial" cx="85" cy="85" r="70"/>
+      <circle class="dial" cx="85" cy="85" r="55"/>
+      <text class="label" id="lbl-mod1" x="85" y="18" text-anchor="middle">DEFINICIÓN</text>
+      <text class="label" id="lbl-mod2" x="152" y="88" text-anchor="start">TÉCNICAS</text>
+      <text class="label" id="lbl-mod3" x="85" y="155" text-anchor="middle">MEJORA</text>
+      <text class="label" id="lbl-eval" x="18" y="88" text-anchor="end">EVAL.</text>
+      <g class="needle" id="needle">
+        <polygon class="needle-fill" points="85,25 91,85 85,80 79,85"/>
+        <polygon points="85,145 91,85 85,90 79,85" fill="#5B6579"/>
+      </g>
+      <circle class="hub" cx="85" cy="85" r="6"/>
+    </svg>
+    <div>
+      <span class="eyebrow">Campus de capacitación · Curso interactivo</span>
+      <h1>Manejo eficaz del tiempo</h1>
+      <p class="lead">Desarrollá los principios básicos del manejo del tiempo, las técnicas clave y sus beneficios para aumentar tu productividad, reducir el estrés y equilibrar tu vida personal y profesional.</p>
+      <div class="hero-meta">
+        <span class="chip">3 módulos</span>
+        <span class="chip">Duración aprox. 3hs</span>
+        <span class="chip">Autoevaluaciones interactivas</span>
+        <span class="chip">Evaluación final</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="layout">
+  <div class="railwrap">
+    <nav class="rail" id="rail">
+      <svg class="mini-compass" viewBox="0 0 170 170" aria-hidden="true">
+        <circle class="dial" cx="85" cy="85" r="70" stroke="#B9C2D2"/>
+        <g class="needle" id="needle-mini">
+          <polygon points="85,25 91,85 85,80 79,85" fill="var(--brass)"/>
+          <polygon points="85,145 91,85 85,90 79,85" fill="#B9C2D2"/>
+        </g>
+        <circle cx="85" cy="85" r="6" fill="var(--paper)" stroke="var(--brass)" stroke-width="2"/>
+      </svg>
+      <a href="#indice">Índice</a>
+      <a href="#mod1" data-nav="mod1">1. Definición y relevancia</a>
+      <a href="#mod2" data-nav="mod2">2. Técnicas</a>
+      <a href="#mod3" data-nav="mod3">3. Productividad y mejora</a>
+      <a href="#evalfinal" data-nav="eval">4. Evaluación final</a>
+    </nav>
+  </div>
+
+  <div class="content">
+
+    <!-- INDICE -->
+    <section class="section" id="indice">
+      <span class="eyebrow">Recorrido del curso</span>
+      <h2>Índice</h2>
+      <ol>
+        <li>Definición y relevancia del manejo del tiempo</li>
+        <li>Técnicas para el manejo del tiempo</li>
+        <li>Manejo del tiempo para el aumento de la productividad</li>
+        <li>Evaluación final</li>
+      </ol>
+    </section>
+
+    <!-- MOD 1 -->
+    <section class="section" id="mod1" data-compass="mod1">
+      <span class="eyebrow">1 · Definición y relevancia</span>
+      <h2>Definición del concepto</h2>
+      <div class="callout">
+        El manejo del tiempo es el proceso de planificar y ejercer un control consciente sobre la cantidad de tiempo que se dedica a actividades específicas, con el objetivo de mejorar la eficiencia, productividad y el logro de metas.
+      </div>
+      <p>Se trata de una habilidad que implica priorizar tareas, asignar el tiempo de manera efectiva y evitar distracciones, para así maximizar el uso del tiempo disponible y lograr un equilibrio entre las responsabilidades laborales y personales.</p>
+
+      <h3>¿Por qué es importante?</h3>
+      <div class="card-grid">
+        <div class="card"><span class="icon">📈</span><h4>Mejora de la productividad</h4><p>Permite completar tareas de manera más eficiente, logrando más en menos tiempo, tanto en lo laboral como en lo personal.</p></div>
+        <div class="card"><span class="icon">🧘</span><h4>Reducción del estrés</h4><p>Una planificación adecuada reduce la sensación de urgencia y la acumulación de pendientes, aumentando la sensación de control.</p></div>
+        <div class="card"><span class="icon">⚖️</span><h4>Equilibrio vida personal y profesional</h4><p>Permite disfrutar tanto los logros profesionales como el tiempo de calidad con familia y amigos.</p></div>
+        <div class="card"><span class="icon">🎯</span><h4>Cumplimiento de metas y objetivos</h4><p>Dividir grandes metas en tareas manejables y asignarles tiempo específico incrementa la probabilidad de éxito.</p></div>
+      </div>
+      <p>En resumen, el manejo del tiempo es esencial para mejorar la productividad, reducir el estrés, facilitar la toma de decisiones, lograr un equilibrio entre la vida personal y profesional, y cumplir con las metas y objetivos establecidos.</p>
+
+      <h3>Identificación de distracciones y ladrón del tiempo</h3>
+      <p>Las distracciones son cualquier estímulo externo o interno que desvía la atención de la tarea principal, interrumpiendo el flujo de trabajo y disminuyendo la productividad. Los "ladrones de tiempo" son aquellas actividades o hábitos que, aunque pueden parecer triviales o necesarios, consumen tiempo de manera ineficaz y obstaculizan la realización de tareas importantes.</p>
+      <p>Tocá cada elemento para conocer cómo hacerle frente:</p>
+      <div class="acc-list">
+        <div class="acc-item"><button class="acc-q"><span class="n">1</span>Redes sociales<span class="chev">+</span></button><div class="acc-a"><p>El uso excesivo de plataformas diseñadas para captar y mantener la atención desvía el foco de tareas productivas. Establecer límites de tiempo, bloquear el acceso durante horas de trabajo y reservar momentos específicos para revisarlas ayuda a controlar este hábito.</p></div></div>
+        <div class="acc-item"><button class="acc-q"><span class="n">2</span>Interrupciones no planificadas<span class="chev">+</span></button><div class="acc-a"><p>Compañeros, llamadas, mensajes, correos o visitas inesperadas fragmentan el tiempo y la concentración. Crear un entorno libre de interrupciones y comunicar cuándo no se desea ser interrumpido reduce su impacto.</p></div></div>
+        <div class="acc-item"><button class="acc-q"><span class="n">3</span>Procrastinación<span class="chev">+</span></button><div class="acc-a"><p>Posponer tareas importantes por otras más fáciles o placenteras acumula trabajo y aumenta el estrés. Dividir tareas grandes en partes pequeñas y usar la técnica de "dos minutos" ayuda a evitarla.</p></div></div>
+        <div class="acc-item"><button class="acc-q"><span class="n">4</span>Multitarea ineficiente<span class="chev">+</span></button><div class="acc-a"><p>Aunque parece aumentar la productividad, cambiar constantemente de tarea requiere tiempo de ajuste que interrumpe el flujo de trabajo y reduce la calidad. Conviene enfocarse en una sola tarea a la vez.</p></div></div>
+        <div class="acc-item"><button class="acc-q"><span class="n">5</span>Falta de prioridades claras<span class="chev">+</span></button><div class="acc-a"><p>No saber qué tareas son más importantes lleva a gastar tiempo en actividades poco relevantes. Agrupar tareas similares en bloques de tiempo ayuda a mantener el foco en lo esencial.</p></div></div>
+      </div>
+
+      <h3>Estrategias para minimizar distracciones y ladrones del tiempo</h3>
+      <div class="card-grid">
+        <div class="card"><span class="num">01</span><h4>Establecer rutinas claras</h4><p>Crear y seguir una rutina diaria que incluya descansos programados y momentos específicos para tareas clave.</p></div>
+        <div class="card"><span class="num">02</span><h4>Ambiente de trabajo optimizado</h4><p>Un entorno libre de distracciones, organizado y limitado a las herramientas necesarias para la tarea en cuestión.</p></div>
+        <div class="card"><span class="num">03</span><h4>Uso de tecnologías de apoyo</h4><p>Aplicaciones de gestión de tareas, bloqueadores de sitios web y cronómetros para controlar las distracciones.</p></div>
+        <div class="card"><span class="num">04</span><h4>Autoevaluación regular</h4><p>Revisar periódicamente cómo se utiliza el tiempo y ajustar las estrategias según sea necesario.</p></div>
+      </div>
+      <p>La identificación y gestión de distracciones y ladrones de tiempo son fundamentales para mejorar la productividad y alcanzar los objetivos con mayor eficiencia.</p>
+
+      <h3>Actividad sugerida</h3>
+      <div class="case-box">
+        <h4>Registro semanal de actividades</h4>
+        <p>Durante una semana, llevá un registro detallado de tus actividades diarias, anotando cada tarea que realizás y el tiempo que le dedicás. Identificá momentos de baja productividad, prestando atención a distracciones, falta de concentración o tareas que toman más tiempo del necesario. Al final de la semana, reflexioná sobre las posibles causas de estas caídas y pensá mejoras concretas para optimizar el uso del tiempo.</p>
+      </div>
+
+      <h3>Cuestionario · Unidad 1</h3>
+      <div class="tf-quiz" id="quiz-m1">
+        <p class="prompt">Indicá si cada afirmación es Verdadera o Falsa.</p>
+        <div class="tf-item" data-correct="falso"><p class="tf-q"><span class="qn">1</span>El manejo del tiempo solo sirve para contextos laborales.</p><div class="tf-buttons"><button type="button" class="tf-btn" data-value="verdadero">Verdadero</button><button type="button" class="tf-btn" data-value="falso">Falso</button></div></div>
+        <div class="tf-item" data-correct="verdadero"><p class="tf-q"><span class="qn">2</span>Una buena planificación del tiempo puede ayudar a reducir el estrés.</p><div class="tf-buttons"><button type="button" class="tf-btn" data-value="verdadero">Verdadero</button><button type="button" class="tf-btn" data-value="falso">Falso</button></div></div>
+        <div class="tf-item" data-correct="falso"><p class="tf-q"><span class="qn">3</span>Las redes sociales no interfieren con la productividad laboral.</p><div class="tf-buttons"><button type="button" class="tf-btn" data-value="verdadero">Verdadero</button><button type="button" class="tf-btn" data-value="falso">Falso</button></div></div>
+        <div class="tf-item" data-correct="falso"><p class="tf-q"><span class="qn">4</span>La multitarea es siempre una técnica efectiva para completar tareas más rápido.</p><div class="tf-buttons"><button type="button" class="tf-btn" data-value="verdadero">Verdadero</button><button type="button" class="tf-btn" data-value="falso">Falso</button></div></div>
+        <div class="tf-item" data-correct="verdadero"><p class="tf-q"><span class="qn">5</span>La procrastinación puede llevar a la acumulación de tareas y al aumento del estrés.</p><div class="tf-buttons"><button type="button" class="tf-btn" data-value="verdadero">Verdadero</button><button type="button" class="tf-btn" data-value="falso">Falso</button></div></div>
+        <div class="tf-item" data-correct="verdadero"><p class="tf-q"><span class="qn">6</span>Establecer rutinas claras es una estrategia útil para evitar distracciones.</p><div class="tf-buttons"><button type="button" class="tf-btn" data-value="verdadero">Verdadero</button><button type="button" class="tf-btn" data-value="falso">Falso</button></div></div>
+        <div class="tf-item" data-correct="falso"><p class="tf-q"><span class="qn">7</span>Los "ladrones de tiempo" son actividades que aumentan la productividad.</p><div class="tf-buttons"><button type="button" class="tf-btn" data-value="verdadero">Verdadero</button><button type="button" class="tf-btn" data-value="falso">Falso</button></div></div>
+        <div class="tf-item" data-correct="verdadero"><p class="tf-q"><span class="qn">8</span>Las listas de tareas ayudan a organizar el día y priorizar actividades.</p><div class="tf-buttons"><button type="button" class="tf-btn" data-value="verdadero">Verdadero</button><button type="button" class="tf-btn" data-value="falso">Falso</button></div></div>
+        <div class="tf-item" data-correct="falso"><p class="tf-q"><span class="qn">9</span>Las metas SMART deben ser generales y sin límite de tiempo.</p><div class="tf-buttons"><button type="button" class="tf-btn" data-value="verdadero">Verdadero</button><button type="button" class="tf-btn" data-value="falso">Falso</button></div></div>
+        <div class="tf-item" data-correct="verdadero"><p class="tf-q"><span class="qn">10</span>La Matriz de Eisenhower es una técnica útil para priorizar tareas según su urgencia e importancia.</p><div class="tf-buttons"><button type="button" class="tf-btn" data-value="verdadero">Verdadero</button><button type="button" class="tf-btn" data-value="falso">Falso</button></div></div>
+        <button type="button" class="btn btn-check-tf" data-target="quiz-m1">Corregir cuestionario</button>
+        <p class="feedback"></p>
+      </div>
+    </section>
+
+    <!-- MOD 2 -->
+    <section class="section" id="mod2" data-compass="mod2">
+      <span class="eyebrow">2 · Técnicas</span>
+      <h2>Técnicas básicas de organización</h2>
+      <p>Desarrollar habilidades esenciales para organizar el tiempo y las tareas de manera eficiente conduce a una mayor productividad y un mejor equilibrio entre vida personal y profesional.</p>
+
+      <div class="card-grid">
+        <div class="card"><h4>Listas de tareas (To do list)</h4><p>Herramientas simples pero poderosas para organizar y priorizar actividades diarias. Crear una lista al inicio de cada día o semana, ordenar por prioridad y revisarla regularmente.</p></div>
+        <div class="card"><h4>Metas SMART</h4><p>Metas Específicas, Medibles, Alcanzables, Relevantes y con un Tiempo limitado, que aseguran objetivos claros y facilitan la planificación y ejecución.</p></div>
+      </div>
+
+      <h3>Matriz de Eisenhower</h3>
+      <p>Es una técnica de priorización que clasifica las tareas en cuatro cuadrantes según su urgencia e importancia, ayudando a concentrarse en lo que realmente importa.</p>
+      <div class="eisenhower">
+        <div class="eh-quad q1"><span class="eh-tag">Cuadrante 01</span><h4>🚩 Urgente e importante</h4><p>Hacerlo de inmediato</p></div>
+        <div class="eh-quad q2"><span class="eh-tag">Cuadrante 02</span><h4>❗ No urgente pero importante</h4><p>Planificar para hacerlo</p></div>
+        <div class="eh-quad q3"><span class="eh-tag">Cuadrante 03</span><h4>📌 Urgente pero no importante</h4><p>Delegar si es posible</p></div>
+        <div class="eh-quad q4"><span class="eh-tag">Cuadrante 04</span><h4>🔄 Ni urgente ni importante</h4><p>Eliminar o minimizar</p></div>
+      </div>
+      <p>Un ejemplo de aplicación práctica sería combinar técnicas: usar la Matriz de Eisenhower para priorizar tareas y luego crear una lista de tareas basada en esa priorización, asegurándose de que las metas asociadas sean SMART.</p>
+
+      <h3>Método Pomodoro</h3>
+      <p>Desarrollado por Francesco Cirillo a fines de los años 80, se basa en dividir el trabajo en intervalos cortos y enfocados —los "pomodoros"—, generalmente de 25 minutos de trabajo intenso seguidos de un breve descanso. Ayuda a mejorar la concentración, reducir la fatiga mental y aumentar la productividad.</p>
+      <div class="card-grid cols-3">
+        <div class="card"><span class="icon">🍅</span><h4>Pomodoro</h4><p>25 minutos de trabajo ininterrumpido en una tarea específica, sin distracciones.</p></div>
+        <div class="card"><span class="icon">☕</span><h4>Descanso corto</h4><p>5 minutos de descanso después de cada pomodoro, para que el cerebro recupere energía.</p></div>
+        <div class="card"><span class="icon">🌿</span><h4>Descanso largo</h4><p>Tras completar cuatro pomodoros, un descanso de 15 a 30 minutos para una recuperación más profunda.</p></div>
+      </div>
+
+      <p>Probá la técnica con este temporizador Pomodoro interactivo:</p>
+      <div class="pomodoro-widget">
+        <span class="pomodoro-mode" id="pomodoro-mode">Foco</span>
+        <div class="pomodoro-display" id="pomodoro-time">25:00</div>
+        <div class="pomodoro-controls">
+          <button class="btn" id="pomodoro-start">Iniciar</button>
+          <button class="btn alt" id="pomodoro-reset">Reiniciar</button>
+        </div>
+        <div class="pomodoro-dots" id="pomodoro-dots">
+          <span class="pomodoro-dot"></span><span class="pomodoro-dot"></span><span class="pomodoro-dot"></span><span class="pomodoro-dot"></span>
+        </div>
+        <div class="pomodoro-cycles">Pomodoros completados: <span id="pomodoro-count">0</span></div>
+      </div>
+
+      <h3>Beneficios del método Pomodoro</h3>
+      <div class="benefit-grid">
+        <div class="card benefit-card"><span class="icon">🎯</span><h4>Mejora de la concentración</h4><p>Limita interrupciones y mantiene un enfoque intenso en la tarea.</p></div>
+        <div class="card benefit-card"><span class="icon">⏱️</span><h4>Gestión más eficiente</h4><p>Facilita la planificación y ejecución al dividir el trabajo en intervalos.</p></div>
+        <div class="card benefit-card"><span class="icon">🧠</span><h4>Reducción de la fatiga mental</h4><p>Los descansos regulares permiten que el cerebro se recupere.</p></div>
+        <div class="card benefit-card"><span class="icon">📊</span><h4>Incremento de la productividad</h4><p>Fomenta un sentido de urgencia controlada que aumenta el trabajo realizado.</p></div>
+      </div>
+
+      <h3>Bloques de tiempo (time blocking)</h3>
+      <p>Consiste en dividir el día en segmentos específicos —bloques— dedicados a realizar tareas concretas, asignando un tiempo determinado para cada actividad, a diferencia de solo hacer una lista de tareas.</p>
+      <div class="card-grid">
+        <div class="card"><h4>Identificación y priorización</h4><p>Identificar todas las tareas del día o semana y clasificarlas según su importancia y urgencia.</p></div>
+        <div class="card"><h4>Duración de los bloques</h4><p>Entre 30 minutos y 2 horas, según la naturaleza de la tarea y la capacidad de concentración.</p></div>
+        <div class="card"><h4>Enfoque en una tarea</h4><p>Concentrarse exclusivamente en la tarea asignada durante cada bloque, evitando la multitarea.</p></div>
+        <div class="card"><h4>Flexibilidad</h4><p>Los bloques deben ser lo suficientemente flexibles para adaptarse a imprevistos.</p></div>
+      </div>
+      <p>Es importante también incorporar pausas y bloquear tiempo para actividades personales, recreación y ejercicio, esencial para mantener un equilibrio saludable entre el trabajo y la vida personal.</p>
+
+      <h3>Delegación y automatización</h3>
+      <p>Son estrategias clave que permiten liberar la agenda de tareas rutinarias o menos prioritarias, enfocándose en actividades de mayor impacto y relevancia.</p>
+      <div class="card-grid">
+        <div class="card"><h4>Delegar</h4><p>Identificar tareas repetitivas que otros pueden hacer igual de bien, elegir a la persona adecuada, dar instrucciones claras y hacer seguimiento con feedback.</p></div>
+        <div class="card"><h4>Automatizar</h4><p>Usar tecnología para tareas rutinarias y de bajo valor añadido: respuestas automáticas, facturación, programación de publicaciones, gestión de bases de datos.</p></div>
+      </div>
+      <div class="benefit-grid">
+        <div class="card benefit-card"><span class="icon">⚡</span><h4>Aumento de la eficiencia</h4><p>Permite concentrarse en tareas estratégicas.</p></div>
+        <div class="card benefit-card"><span class="icon">🌱</span><h4>Desarrollo de habilidades</h4><p>Ayuda al equipo a asumir nuevas responsabilidades.</p></div>
+        <div class="card benefit-card"><span class="icon">🚀</span><h4>Manejo del tiempo de respuesta</h4><p>Logra un manejo más rápido de las tareas.</p></div>
+        <div class="card benefit-card"><span class="icon">⏳</span><h4>Ahorro de tiempo</h4><p>Reduce el tiempo dedicado a tareas repetitivas.</p></div>
+      </div>
+
+      <h3>Videos</h3>
+      <div class="video-card">
+        <span class="who">Método Pomodoro</span>
+        <div class="video-frame">
+          <iframe src="https://www.youtube.com/embed/jr3udF7Hxac" title="Método Pomodoro" allowfullscreen></iframe>
+        </div>
+      </div>
+      <div class="video-card">
+        <span class="who">Bloques de tiempo y Google Calendar</span>
+        <div class="video-frame">
+          <iframe src="https://www.youtube.com/embed/ZJlNCS47nkk" title="Bloques de tiempo y Google Calendar" allowfullscreen></iframe>
+        </div>
+      </div>
+
+      <h3>Cuestionario · Unidad 2</h3>
+      <div class="tf-quiz" id="quiz-m2">
+        <p class="prompt">Indicá si cada afirmación es Verdadera o Falsa.</p>
+        <div class="tf-item" data-correct="falso"><p class="tf-q"><span class="qn">1</span>El Método Pomodoro recomienda pausas de 10 minutos cada hora de trabajo.</p><div class="tf-buttons"><button type="button" class="tf-btn" data-value="verdadero">Verdadero</button><button type="button" class="tf-btn" data-value="falso">Falso</button></div></div>
+        <div class="tf-item" data-correct="verdadero"><p class="tf-q"><span class="qn">2</span>Un Pomodoro estándar dura 25 minutos.</p><div class="tf-buttons"><button type="button" class="tf-btn" data-value="verdadero">Verdadero</button><button type="button" class="tf-btn" data-value="falso">Falso</button></div></div>
+        <div class="tf-item" data-correct="verdadero"><p class="tf-q"><span class="qn">3</span>Los descansos largos en el método Pomodoro se toman después de cuatro pomodoros.</p><div class="tf-buttons"><button type="button" class="tf-btn" data-value="verdadero">Verdadero</button><button type="button" class="tf-btn" data-value="falso">Falso</button></div></div>
+        <div class="tf-item" data-correct="verdadero"><p class="tf-q"><span class="qn">4</span>La técnica de bloques de tiempo permite organizar el día por segmentos de tareas específicas.</p><div class="tf-buttons"><button type="button" class="tf-btn" data-value="verdadero">Verdadero</button><button type="button" class="tf-btn" data-value="falso">Falso</button></div></div>
+        <div class="tf-item" data-correct="falso"><p class="tf-q"><span class="qn">5</span>En la técnica de bloques de tiempo, la multitarea es altamente recomendada.</p><div class="tf-buttons"><button type="button" class="tf-btn" data-value="verdadero">Verdadero</button><button type="button" class="tf-btn" data-value="falso">Falso</button></div></div>
+        <div class="tf-item" data-correct="verdadero"><p class="tf-q"><span class="qn">6</span>Delegar tareas permite enfocarse en actividades más relevantes.</p><div class="tf-buttons"><button type="button" class="tf-btn" data-value="verdadero">Verdadero</button><button type="button" class="tf-btn" data-value="falso">Falso</button></div></div>
+        <div class="tf-item" data-correct="falso"><p class="tf-q"><span class="qn">7</span>Automatizar tareas no contribuye a mejorar la productividad.</p><div class="tf-buttons"><button type="button" class="tf-btn" data-value="verdadero">Verdadero</button><button type="button" class="tf-btn" data-value="falso">Falso</button></div></div>
+        <div class="tf-item" data-correct="verdadero"><p class="tf-q"><span class="qn">8</span>La selección adecuada de personas para delegar tareas es clave para la eficacia.</p><div class="tf-buttons"><button type="button" class="tf-btn" data-value="verdadero">Verdadero</button><button type="button" class="tf-btn" data-value="falso">Falso</button></div></div>
+        <div class="tf-item" data-correct="verdadero"><p class="tf-q"><span class="qn">9</span>Una aplicación útil de los bloques de tiempo es agrupar tareas similares.</p><div class="tf-buttons"><button type="button" class="tf-btn" data-value="verdadero">Verdadero</button><button type="button" class="tf-btn" data-value="falso">Falso</button></div></div>
+        <div class="tf-item" data-correct="falso"><p class="tf-q"><span class="qn">10</span>Las técnicas de delegación y automatización se aplican solo en grandes empresas.</p><div class="tf-buttons"><button type="button" class="tf-btn" data-value="verdadero">Verdadero</button><button type="button" class="tf-btn" data-value="falso">Falso</button></div></div>
+        <button type="button" class="btn btn-check-tf" data-target="quiz-m2">Corregir cuestionario</button>
+        <p class="feedback"></p>
+      </div>
+    </section>
+
+    <!-- MOD 3 -->
+    <section class="section" id="mod3" data-compass="mod3">
+      <span class="eyebrow">3 · Productividad y mejora continua</span>
+      <h2>Revisión y autoevaluación periódica</h2>
+      <p>Reflexionar sobre cómo se está utilizando el tiempo permite identificar áreas de mejora y realizar ajustes para optimizar la productividad y el equilibrio entre vida personal y profesional.</p>
+      <div class="card-grid cols-3">
+        <div class="card"><h4>Revisión diaria</h4><p>¿Logré completar las tareas más importantes? ¿Dónde se fue el tiempo no productivo? Ajustá el plan del día siguiente.</p></div>
+        <div class="card"><h4>Revisión semanal</h4><p>¿Se cumplieron los objetivos de la semana? ¿Hubo distracciones recurrentes? Reforzá lo que funcionó y ajustá lo que no.</p></div>
+        <div class="card"><h4>Revisión mensual</h4><p>¿Estoy más cerca de mis objetivos a largo plazo? Redefiní metas y estrategias para mejorar la eficiencia.</p></div>
+      </div>
+      <p>Herramientas útiles: diarios de tiempo, aplicaciones de seguimiento y sesiones de reflexión guiada donde se anotan logros, desafíos y lecciones aprendidas.</p>
+
+      <h3>Flexibilidad y adaptabilidad</h3>
+      <p>Son habilidades cruciales para enfrentar imprevistos y cambios en las prioridades sin perder eficiencia ni enfoque, ajustando planes y estrategias de manera dinámica.</p>
+      <div class="acc-list">
+        <div class="acc-item"><button class="acc-q"><span class="n">1</span>Preparación para lo inesperado<span class="chev">+</span></button><div class="acc-a"><p>Incluir márgenes de tiempo en el calendario para manejar tareas urgentes o imprevistos, evitando que un contratiempo afecte todo el día.</p></div></div>
+        <div class="acc-item"><button class="acc-q"><span class="n">2</span>Reevaluación de prioridades<span class="chev">+</span></button><div class="acc-a"><p>Ante una nueva tarea urgente, reevaluar las prioridades en tiempo real usando herramientas como la Matriz de Eisenhower.</p></div></div>
+        <div class="acc-item"><button class="acc-q"><span class="n">3</span>Reestructuración de bloques de tiempo<span class="chev">+</span></button><div class="acc-a"><p>Si un bloque se ve interrumpido, reestructurar el calendario para acomodar nuevas tareas sin perder de vista las prioridades principales.</p></div></div>
+        <div class="acc-item"><button class="acc-q"><span class="n">4</span>Mentalidad abierta al cambio<span class="chev">+</span></button><div class="acc-a"><p>Ver los imprevistos como oportunidades de mejora y desarrollar resiliencia para adaptarse rápidamente sin perder motivación.</p></div></div>
+      </div>
+      <p>Beneficios: mayor resiliencia, reducción del estrés, mejora de la productividad y capacidad de innovación frente a circunstancias cambiantes.</p>
+
+      <h3>Mejora continua</h3>
+      <p>Enfoque sistemático que busca incrementar progresivamente la eficiencia, productividad y efectividad de la gestión del tiempo, inspirado en la filosofía Kaizen: pequeños ajustes regulares que llevan a grandes resultados a largo plazo.</p>
+      <div class="card-grid">
+        <div class="card"><h4>Reflexión regular</h4><p>¿Qué funcionó bien esta semana? ¿Dónde hubo obstáculos? ¿Qué cambios pequeños podrían mejorar la próxima semana?</p></div>
+        <div class="card"><h4>Identificación de áreas de mejora</h4><p>Analizar patrones de ineficiencia y buscar oportunidades para simplificar procesos o delegar responsabilidades.</p></div>
+        <div class="card"><h4>Implementación de pequeños cambios</h4><p>Introducir mejoras manejables, experimentar con nuevas técnicas y ajustar según sea necesario.</p></div>
+        <div class="card"><h4>Monitoreo del progreso</h4><p>Documentar los cambios realizados y evaluar su impacto en la productividad y la eficiencia.</p></div>
+      </div>
+
+      <h3>Para finalizar: plan de mejora continua</h3>
+      <p>Para elaborar un plan de mejora continua en la gestión del tiempo se debe comenzar por establecer objetivos claros y específicos, alineados con las metas personales y profesionales.</p>
+      <div class="timeline">
+        <div class="timeline-item">
+          <span class="tag">Corto plazo · 1 a 3 meses</span>
+          <ul>
+            <li>Identificar áreas inmediatas de mejora, como reducir distracciones o mejorar la priorización.</li>
+            <li>Implementar pequeñas estrategias, como el Pomodoro diario o la delegación de tareas rutinarias.</li>
+            <li>Monitorear el progreso semanalmente y ajustar según sea necesario.</li>
+          </ul>
+        </div>
+        <div class="timeline-item">
+          <span class="tag">Mediano plazo · 3 a 6 meses</span>
+          <ul>
+            <li>Consolidar los hábitos adquiridos y expandirlos a otras áreas de la gestión del tiempo.</li>
+            <li>Evaluar la efectividad de las herramientas y técnicas utilizadas.</li>
+            <li>Introducir nuevas estrategias, como reestructurar bloques de tiempo o automatizar procesos.</li>
+          </ul>
+        </div>
+        <div class="timeline-item">
+          <span class="tag">Largo plazo · 6 meses en adelante</span>
+          <ul>
+            <li>Crear un sistema de revisión y ajuste continuo ante cambios en responsabilidades o prioridades.</li>
+            <li>Fomentar una mentalidad de mejora constante frente a nuevos desafíos.</li>
+            <li>Evaluar el impacto global de las mejoras en la productividad y el equilibrio vida-trabajo.</li>
+          </ul>
+        </div>
+      </div>
+      <p>A través de la mejora continua, se espera desarrollar una gestión del tiempo más eficiente y sostenible, que permita alcanzar las metas de manera más efectiva.</p>
+
+      <h3>Cuestionario · Unidad 3</h3>
+      <div class="tf-quiz" id="quiz-m3">
+        <p class="prompt">Indicá si cada afirmación es Verdadera o Falsa.</p>
+        <div class="tf-item" data-correct="verdadero"><p class="tf-q"><span class="qn">1</span>Revisar el uso del tiempo regularmente ayuda a detectar patrones de ineficiencia.</p><div class="tf-buttons"><button type="button" class="tf-btn" data-value="verdadero">Verdadero</button><button type="button" class="tf-btn" data-value="falso">Falso</button></div></div>
+        <div class="tf-item" data-correct="falso"><p class="tf-q"><span class="qn">2</span>La autoevaluación diaria no tiene ningún impacto en la gestión del tiempo.</p><div class="tf-buttons"><button type="button" class="tf-btn" data-value="verdadero">Verdadero</button><button type="button" class="tf-btn" data-value="falso">Falso</button></div></div>
+        <div class="tf-item" data-correct="verdadero"><p class="tf-q"><span class="qn">3</span>La flexibilidad implica estar dispuesto a adaptar el calendario frente a imprevistos.</p><div class="tf-buttons"><button type="button" class="tf-btn" data-value="verdadero">Verdadero</button><button type="button" class="tf-btn" data-value="falso">Falso</button></div></div>
+        <div class="tf-item" data-correct="falso"><p class="tf-q"><span class="qn">4</span>La Matriz de Eisenhower es una técnica exclusiva de esta unidad.</p><div class="tf-buttons"><button type="button" class="tf-btn" data-value="verdadero">Verdadero</button><button type="button" class="tf-btn" data-value="falso">Falso</button></div></div>
+        <div class="tf-item" data-correct="verdadero"><p class="tf-q"><span class="qn">5</span>Las revisiones semanales ayudan a identificar distracciones recurrentes.</p><div class="tf-buttons"><button type="button" class="tf-btn" data-value="verdadero">Verdadero</button><button type="button" class="tf-btn" data-value="falso">Falso</button></div></div>
+        <div class="tf-item" data-correct="falso"><p class="tf-q"><span class="qn">6</span>La mejora continua se basa en realizar grandes cambios abruptos.</p><div class="tf-buttons"><button type="button" class="tf-btn" data-value="verdadero">Verdadero</button><button type="button" class="tf-btn" data-value="falso">Falso</button></div></div>
+        <div class="tf-item" data-correct="verdadero"><p class="tf-q"><span class="qn">7</span>La flexibilidad favorece la resiliencia frente a cambios inesperados.</p><div class="tf-buttons"><button type="button" class="tf-btn" data-value="verdadero">Verdadero</button><button type="button" class="tf-btn" data-value="falso">Falso</button></div></div>
+        <div class="tf-item" data-correct="verdadero"><p class="tf-q"><span class="qn">8</span>Tener márgenes de tiempo permite afrontar mejor los imprevistos.</p><div class="tf-buttons"><button type="button" class="tf-btn" data-value="verdadero">Verdadero</button><button type="button" class="tf-btn" data-value="falso">Falso</button></div></div>
+        <div class="tf-item" data-correct="verdadero"><p class="tf-q"><span class="qn">9</span>La mejora continua se basa en pequeños ajustes periódicos.</p><div class="tf-buttons"><button type="button" class="tf-btn" data-value="verdadero">Verdadero</button><button type="button" class="tf-btn" data-value="falso">Falso</button></div></div>
+        <div class="tf-item" data-correct="falso"><p class="tf-q"><span class="qn">10</span>La mentalidad de crecimiento no influye en el manejo del tiempo.</p><div class="tf-buttons"><button type="button" class="tf-btn" data-value="verdadero">Verdadero</button><button type="button" class="tf-btn" data-value="falso">Falso</button></div></div>
+        <button type="button" class="btn btn-check-tf" data-target="quiz-m3">Corregir cuestionario</button>
+        <p class="feedback"></p>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<!-- EVALUACION FINAL -->
+<section class="eval-section" id="evalfinal" data-compass="eval">
+  <div class="section">
+    <span class="eyebrow">4 · Para cerrar el curso</span>
+    <h2>Evaluación final</h2>
+    <p class="lead">Ya recorriste los tres bloques del curso y completaste las autoevaluaciones de cada unidad. Para finalizar, completá el siguiente formulario:</p>
+    <ul class="eval-checklist">
+      <li>Definición y relevancia del manejo del tiempo</li>
+      <li>Identificación de distracciones y ladrones de tiempo</li>
+      <li>Método Pomodoro, bloques de tiempo, delegación y automatización</li>
+      <li>Revisión, flexibilidad y mejora continua</li>
+    </ul>
+    <div class="form-frame">
+      <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdpF0SSYHbNe7f6wU7O3irCTNwaOUugAC3VsMLe3geWH81ZxQ/viewform?embedded=true" title="Manejo eficaz del tiempo - Evaluación Final">Cargando…</iframe>
+    </div>
+  </div>
+</section>
+
+<footer>CAMPUS DE CAPACITACIÓN INTERNA — MANEJO EFICAZ DEL TIEMPO</footer>
+
+<script>
+// ---- Accordions ----
+document.querySelectorAll('.acc-q').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    btn.closest('.acc-item').classList.toggle('open');
+  });
+});
+
+// ---- TF Quiz selection ----
+document.querySelectorAll('.tf-item').forEach(item=>{
+  const buttons = item.querySelectorAll('.tf-btn');
+  buttons.forEach(b=>{
+    b.addEventListener('click', ()=>{
+      buttons.forEach(x=>x.classList.remove('selected','correct','incorrect'));
+      b.classList.add('selected');
+    });
+  });
+});
+
+// ---- TF Quiz check ----
+document.querySelectorAll('.btn-check-tf').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    const quiz = document.getElementById(btn.dataset.target);
+    const items = quiz.querySelectorAll('.tf-item');
+    let hits = 0;
+    let answered = 0;
+    items.forEach(item=>{
+      const correct = item.dataset.correct;
+      const selected = item.querySelector('.tf-btn.selected');
+      item.querySelectorAll('.tf-btn').forEach(b=>b.classList.remove('correct','incorrect'));
+      if(selected){
+        answered++;
+        if(selected.dataset.value === correct){
+          selected.classList.add('correct');
+          hits++;
+        } else {
+          selected.classList.add('incorrect');
+          item.querySelector('.tf-btn[data-value="'+correct+'"]').classList.add('correct');
+        }
+      }
+    });
+    const fb = quiz.querySelector('.feedback');
+    fb.classList.remove('good','bad');
+    if(answered < items.length){
+      fb.textContent = 'Respondé todas las preguntas antes de corregir. Llevás ' + answered + ' de ' + items.length + '.';
+      fb.classList.add('bad');
+    } else if(hits === items.length){
+      fb.textContent = '¡Perfecto! Respondiste correctamente las ' + items.length + ' preguntas.';
+      fb.classList.add('good');
+    } else {
+      fb.textContent = 'Acertaste ' + hits + ' de ' + items.length + '. Revisá las respuestas resaltadas.';
+      fb.classList.add('bad');
+    }
+    fb.classList.add('show');
+  });
+});
+
+// ---- Pomodoro Timer ----
+(function(){
+  const WORK = 25*60, SHORT = 5*60, LONG = 15*60;
+  let remaining = WORK, mode = 'work', running = false, timer = null, completed = 0;
+  const display = document.getElementById('pomodoro-time');
+  const modeLabel = document.getElementById('pomodoro-mode');
+  const startBtn = document.getElementById('pomodoro-start');
+  const resetBtn = document.getElementById('pomodoro-reset');
+  const countLabel = document.getElementById('pomodoro-count');
+  const dots = document.querySelectorAll('#pomodoro-dots .pomodoro-dot');
+
+  function render(){
+    const m = Math.floor(remaining/60).toString().padStart(2,'0');
+    const s = (remaining%60).toString().padStart(2,'0');
+    display.textContent = m + ':' + s;
+    modeLabel.textContent = mode === 'work' ? 'Foco' : (mode === 'short' ? 'Descanso corto' : 'Descanso largo');
+    countLabel.textContent = completed;
+    dots.forEach((d,i)=> d.classList.toggle('done', i < (completed % 4)));
+  }
+
+  function tick(){
+    if(remaining > 0){
+      remaining--;
+      render();
+    } else {
+      if(mode === 'work'){
+        completed++;
+        mode = (completed % 4 === 0) ? 'long' : 'short';
+        remaining = (mode === 'long') ? LONG : SHORT;
+      } else {
+        mode = 'work';
+        remaining = WORK;
+      }
+      render();
+    }
+  }
+
+  startBtn.addEventListener('click', ()=>{
+    running = !running;
+    if(running){
+      startBtn.textContent = 'Pausar';
+      timer = setInterval(tick, 1000);
+    } else {
+      startBtn.textContent = 'Iniciar';
+      clearInterval(timer);
+    }
+  });
+
+  resetBtn.addEventListener('click', ()=>{
+    running = false;
+    clearInterval(timer);
+    startBtn.textContent = 'Iniciar';
+    mode = 'work';
+    remaining = WORK;
+    completed = 0;
+    render();
+  });
+
+  render();
+})();
+
+// ---- Compass + active nav ----
+const angles = {mod1:0, mod2:90, mod3:180, eval:270};
+const needle = document.getElementById('needle');
+const needleMini = document.getElementById('needle-mini');
+const labelIds = {mod1:'lbl-mod1', mod2:'lbl-mod2', mod3:'lbl-mod3', eval:'lbl-eval'};
+const navLinks = document.querySelectorAll('.rail a[data-nav]');
+
+function setActive(key){
+  const angle = angles[key] ?? 0;
+  needle.style.transform = `rotate(${angle}deg)`;
+  needleMini.style.transform = `rotate(${angle}deg)`;
+  Object.values(labelIds).forEach(id=>document.getElementById(id).classList.remove('active'));
+  if(labelIds[key]) document.getElementById(labelIds[key]).classList.add('active');
+  navLinks.forEach(a=>a.classList.toggle('active', a.dataset.nav === key));
+}
+
+const targets = document.querySelectorAll('[data-compass]');
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{ if(entry.isIntersecting){ setActive(entry.target.dataset.compass); } });
+}, {rootMargin:'-40% 0px -50% 0px', threshold:0});
+targets.forEach(t=>io.observe(t));
+</script>
+
+</body>
+</html>
