@@ -79,34 +79,6 @@ a{color:var(--slate);}
 .section + .section{border-top:1px solid var(--line);}
 .section[data-compass]{padding-top:96px;}
 
-/* ===== BOTON VOLVER A CURSOS ===== */
-.back-home{
-  position:fixed;
-  top:18px;
-  left:18px;
-  z-index:1000;
-  display:inline-flex;
-  align-items:center;
-  gap:6px;
-  font-family:'IBM Plex Mono', monospace;
-  font-size:12px;
-  letter-spacing:.03em;
-  text-decoration:none;
-  color:#EFEEE8;
-  background:rgba(20,31,51,.55);
-  backdrop-filter:blur(6px);
-  border:1px solid rgba(255,255,255,.18);
-  padding:8px 14px 8px 10px;
-  border-radius:100px;
-  opacity:.75;
-  transition:opacity .15s, background .15s;
-}
-.back-home:hover{opacity:1; background:var(--ink);}
-.back-home svg{width:13px; height:13px; flex-shrink:0;}
-@media (max-width:900px){
-  .back-home{top:10px; left:10px; font-size:11px; padding:7px 12px 7px 9px;}
-}
-
 /* ===== HERO ===== */
 .hero{
   background:radial-gradient(120% 140% at 15% -10%, #24365A 0%, var(--ink) 55%, #0F1728 100%);
@@ -136,7 +108,7 @@ a{color:var(--slate);}
   border-radius:100px;
 }
 
-/* compass (4 puntos) */
+/* compass (3 puntos) */
 .compass{width:150px; height:150px; margin:0 auto;}
 .compass .dial{fill:none; stroke:rgba(255,255,255,.35); stroke-width:1;}
 .compass .label{
@@ -286,19 +258,29 @@ a{color:var(--slate);}
 .case-box{background:#fff; border:1px solid var(--line); border-left:4px solid var(--slate); border-radius:0 var(--radius) var(--radius) 0; padding:22px 24px; margin:20px 0;}
 .case-box h4{margin-bottom:.4em;}
 
-/* ===== EVAL FINAL ===== */
-.eval-section{background:var(--ink); color:#EFEEE8; margin-top:0;}
-.eval-section .section{max-width:var(--maxw); padding-top:70px; padding-bottom:70px;}
-.eval-section h2{color:#fff;}
-.eval-section .eyebrow{color:var(--brass-soft);}
-.eval-section p.lead{color:#C9CFDC;}
-.eval-checklist{list-style:none; padding:0; margin:20px 0; display:grid; gap:8px;}
-.eval-checklist li{
-  display:flex; gap:10px; align-items:flex-start; font-size:14.5px; color:#DCE1EA;
+/* ===== CIERRE ===== */
+.closing{background:var(--ink); color:#EFEEE8;}
+.closing .section{padding-top:70px; padding-bottom:70px;}
+.closing h2{color:#fff;}
+.closing .eyebrow{color:var(--brass-soft);}
+.closing p.lead{color:#C9CFDC;}
+.closing-steps{list-style:none; padding:0; margin:28px 0; display:grid; gap:12px;}
+.closing-steps li{
+  display:flex; gap:16px; align-items:flex-start;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:var(--radius);
+  padding:16px 20px;
 }
-.eval-checklist li::before{content:"✓"; color:var(--brass-soft); font-weight:700; flex-shrink:0;}
-.form-frame{margin-top:26px; background:#fff; border-radius:var(--radius); overflow:hidden; box-shadow:0 20px 50px rgba(0,0,0,.35);}
-.form-frame iframe{width:100%; min-height:1400px; border:none; display:block;}
+.closing-steps .n{
+  font-family:'IBM Plex Mono', monospace; font-size:13px; font-weight:500;
+  width:30px; height:30px; border-radius:50%;
+  background:var(--brass); color:var(--ink);
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+.closing-steps h4{color:#fff; font-size:17px; margin:0 0 .2em;}
+.closing-steps p{color:#C9CFDC; font-size:14.5px; margin:0;}
+.closing-note{color:var(--brass-soft); font-family:'IBM Plex Mono', monospace; font-size:13px; letter-spacing:.04em; margin:0;}
 
 footer{text-align:center; padding:30px 20px; color:var(--text-soft); font-size:13.5px; font-family:'IBM Plex Mono', monospace;}
 
@@ -321,11 +303,6 @@ footer{text-align:center; padding:30px 20px; color:var(--text-soft); font-size:1
 </head>
 <body>
 
-<a class="back-home" href="https://capalink.github.io/Cursos-LinkSolution/">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>
-  VOLVER A CURSOS
-</a>
-
 <!-- HERO -->
 <header class="hero">
   <div class="hero-inner">
@@ -334,9 +311,8 @@ footer{text-align:center; padding:30px 20px; color:var(--text-soft); font-size:1
       <circle class="dial" cx="85" cy="85" r="70"/>
       <circle class="dial" cx="85" cy="85" r="55"/>
       <text class="label" id="lbl-mod1" x="85" y="18" text-anchor="middle">DEFINICIÓN</text>
-      <text class="label" id="lbl-mod2" x="152" y="88" text-anchor="start">TÉCNICAS</text>
-      <text class="label" id="lbl-mod3" x="85" y="155" text-anchor="middle">MEJORA</text>
-      <text class="label" id="lbl-eval" x="18" y="88" text-anchor="end">EVAL.</text>
+      <text class="label" id="lbl-mod2" x="140" y="120" text-anchor="start">TÉCNICAS</text>
+      <text class="label" id="lbl-mod3" x="30" y="120" text-anchor="end">MEJORA</text>
       <g class="needle" id="needle">
         <polygon class="needle-fill" points="85,25 91,85 85,80 79,85"/>
         <polygon points="85,145 91,85 85,90 79,85" fill="#5B6579"/>
@@ -351,7 +327,7 @@ footer{text-align:center; padding:30px 20px; color:var(--text-soft); font-size:1
         <span class="chip">3 módulos</span>
         <span class="chip">Duración aprox. 3hs</span>
         <span class="chip">Autoevaluaciones interactivas</span>
-        <span class="chip">Evaluación final</span>
+        <span class="chip">Evaluación en Humand</span>
       </div>
     </div>
   </div>
@@ -372,7 +348,7 @@ footer{text-align:center; padding:30px 20px; color:var(--text-soft); font-size:1
       <a href="#mod1" data-nav="mod1">1. Definición y relevancia</a>
       <a href="#mod2" data-nav="mod2">2. Técnicas</a>
       <a href="#mod3" data-nav="mod3">3. Productividad y mejora</a>
-      <a href="#evalfinal" data-nav="eval">4. Evaluación final</a>
+      <a href="#cierre">Cierre</a>
     </nav>
   </div>
 
@@ -386,7 +362,6 @@ footer{text-align:center; padding:30px 20px; color:var(--text-soft); font-size:1
         <li>Definición y relevancia del manejo del tiempo</li>
         <li>Técnicas para el manejo del tiempo</li>
         <li>Manejo del tiempo para el aumento de la productividad</li>
-        <li>Evaluación final</li>
       </ol>
     </section>
 
@@ -640,21 +615,33 @@ footer{text-align:center; padding:30px 20px; color:var(--text-soft); font-size:1
   </div>
 </div>
 
-<!-- EVALUACION FINAL -->
-<section class="eval-section" id="evalfinal" data-compass="eval">
+<!-- CIERRE -->
+<section class="closing" id="cierre">
   <div class="section">
-    <span class="eyebrow">4 · Para cerrar el curso</span>
-    <h2>Evaluación final</h2>
-    <p class="lead">Ya recorriste los tres bloques del curso y completaste las autoevaluaciones de cada unidad. Para finalizar, completá el siguiente formulario:</p>
-    <ul class="eval-checklist">
-      <li>Definición y relevancia del manejo del tiempo</li>
-      <li>Identificación de distracciones y ladrones de tiempo</li>
-      <li>Método Pomodoro, bloques de tiempo, delegación y automatización</li>
-      <li>Revisión, flexibilidad y mejora continua</li>
-    </ul>
-    <div class="form-frame">
-      <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdpF0SSYHbNe7f6wU7O3irCTNwaOUugAC3VsMLe3geWH81ZxQ/viewform?embedded=true" title="Manejo eficaz del tiempo - Evaluación Final">Cargando…</iframe>
-    </div>
+    <span class="eyebrow">Para cerrar el curso</span>
+    <h2>¡Terminaste los contenidos!</h2>
+    <p class="lead">Ya recorriste los tres bloques del curso. Para completarlo, falta un último paso en Humand:</p>
+
+    <ol class="closing-steps">
+      <li>
+        <span class="n">1</span>
+        <div><h4>Cerrá este curso</h4><p>Cerrá esta ventana para volver a Humand.</p></div>
+      </li>
+      <li>
+        <span class="n">2</span>
+        <div><h4>Realizá la evaluación final</h4><p>Ingresá nuevamente al curso en Humand y completá la evaluación final.</p></div>
+      </li>
+      <li>
+        <span class="n">3</span>
+        <div><h4>Firmá el curso</h4><p>El curso queda completo una vez que realices la evaluación y lo firmes.</p></div>
+      </li>
+      <li>
+        <span class="n">4</span>
+        <div><h4>Descargá tu certificado</h4><p>Cuando lo completes, vas a poder descargar el certificado correspondiente.</p></div>
+      </li>
+    </ol>
+
+    <p class="closing-note">¡Gracias por tu tiempo y tu compromiso con la capacitación!</p>
   </div>
 </section>
 
@@ -779,10 +766,10 @@ document.querySelectorAll('.btn-check-tf').forEach(btn=>{
 })();
 
 // ---- Compass + active nav ----
-const angles = {mod1:0, mod2:90, mod3:180, eval:270};
+const angles = {mod1:0, mod2:120, mod3:240};
 const needle = document.getElementById('needle');
 const needleMini = document.getElementById('needle-mini');
-const labelIds = {mod1:'lbl-mod1', mod2:'lbl-mod2', mod3:'lbl-mod3', eval:'lbl-eval'};
+const labelIds = {mod1:'lbl-mod1', mod2:'lbl-mod2', mod3:'lbl-mod3'};
 const navLinks = document.querySelectorAll('.rail a[data-nav]');
 
 function setActive(key){
